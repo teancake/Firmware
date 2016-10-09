@@ -192,6 +192,12 @@ public:
 	 */
 	virtual void 			set_max_delta_out_once(float delta_out_max) {};
 
+	/*
+	 * @brief      Sets the thrust factor used to calculate mapping from desired thrust to pwm.
+	 *
+	 * @param[in]  val   The value
+	 */
+	virtual void 			set_thrust_factor(float val) {};
 
 protected:
 	/** client-supplied callback used when fetching control values */
@@ -332,6 +338,13 @@ public:
 	 *
 	 */
 	virtual void 			set_max_delta_out_once(float delta_out_max);
+
+	/*
+	 * @brief      Sets the thrust factor used to calculate mapping from desired thrust to pwm.
+	 *
+	 * @param[in]  val   The value
+	 */
+	virtual void	set_thrust_factor(float val);
 
 private:
 	Mixer				*_first;	/**< linked list of mixers */
@@ -551,13 +564,21 @@ public:
 	 */
 	virtual void 			set_max_delta_out_once(float delta_out_max) {_delta_out_max = delta_out_max;}
 
+	/**
+	 * @brief      Sets the thrust factor used to calculate mapping from desired thrust to pwm.
+	 *
+	 * @param[in]  val   The value
+	 */
+	virtual void			set_thrust_factor(float val) {_thrust_factor = val;}
+
 private:
 	float				_roll_scale;
 	float				_pitch_scale;
 	float				_yaw_scale;
 	float				_idle_speed;
-
 	float 				_delta_out_max;
+	float 				_thrust_factor;
+
 
 	orb_advert_t			_limits_pub;
 	multirotor_motor_limits_s 	_limits;
