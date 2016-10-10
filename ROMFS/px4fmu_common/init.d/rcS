@@ -567,6 +567,11 @@ then
 		then
 			mavlink start -d /dev/ttyS2 -b 57600 -r 1000
 		fi
+		if param compare SYS_COMPANION 438400
+		then
+			satcom start -d /dev/ttyS2 -b 38400
+			mavlink start -d /dev/satcom -b 38400 -r 1000
+		fi
 		if param compare SYS_COMPANION 1921600
 		then
 			mavlink start -d /dev/ttyS2 -b 921600 -r 20000
