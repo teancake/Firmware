@@ -117,9 +117,10 @@ int gpio_led_main(int argc, char *argv[])
 #ifdef CONFIG_ARCH_BOARD_PX4FMU_V1
 			char *pin_name = "PX4FMU GPIO_EXT1";
 #endif
-#if defined(CONFIG_ARCH_BOARD_PX4FMU_V2) || \
-	defined(CONFIG_ARCH_BOARD_PX4FMU_V4) || \
-	defined(CONFIG_ARCH_BOARD_MINDPX_V2) || \
+#if defined(CONFIG_ARCH_BOARD_NXPHLITE_V1) || \
+	defined(CONFIG_ARCH_BOARD_PX4FMU_V2)   || \
+	defined(CONFIG_ARCH_BOARD_PX4FMU_V4)   || \
+	defined(CONFIG_ARCH_BOARD_MINDPX_V2)   || \
 	defined(CONFIG_ARCH_BOARD_PX4NUCLEOF767ZI_V1)
 			char pin_name[] = "AUX OUT 1";
 #endif
@@ -163,9 +164,10 @@ int gpio_led_main(int argc, char *argv[])
 					}
 
 #endif
-#if defined(CONFIG_ARCH_BOARD_PX4FMU_V2) || \
-	defined(CONFIG_ARCH_BOARD_PX4FMU_V4) || \
-	defined(CONFIG_ARCH_BOARD_MINDPX_V2) || \
+#if defined(CONFIG_ARCH_BOARD_NXPHLITE_V1) || \
+	defined(CONFIG_ARCH_BOARD_PX4FMU_V2)   || \
+	defined(CONFIG_ARCH_BOARD_PX4FMU_V4)   || \
+	defined(CONFIG_ARCH_BOARD_MINDPX_V2)   || \
 	defined(CONFIG_ARCH_BOARD_PX4NUCLEOF767ZI_V1)
 					unsigned int n = strtoul(argv[3], NULL, 10);
 
@@ -211,6 +213,8 @@ int gpio_led_main(int argc, char *argv[])
 			errx(1, "unrecognized command '%s', only supporting 'start' or 'stop'", argv[1]);
 		}
 	}
+
+	return 1;
 }
 
 void gpio_led_start(FAR void *arg)
