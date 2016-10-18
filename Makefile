@@ -232,6 +232,7 @@ checks_defaults: \
 	check_s2740vc-v1_default \
 	check_tap-v1_default \
 	check_crazyflie_default \
+	check_nxpflite-v1_default \
 
 checks_bootloaders: \
 	check_px4cannode-v1_bootloader \
