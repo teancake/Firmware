@@ -943,6 +943,7 @@ PX4FMU::cycle()
 #endif
 #endif
 		param_find("MOT_SLEW_MAX");
+		param_find("THR_MDL_FAC");
 
 		_initialized = true;
 	}
