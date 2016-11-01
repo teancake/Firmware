@@ -47,7 +47,7 @@
  * @max 99999
  * @group System
  */
-PARAM_DEFINE_INT32(SYS_AUTOSTART, 0);
+PARAM_DEFINE_INT32(SYS_AUTOSTART, 4001);
 
 /**
  * Automatically configure default values.
@@ -74,7 +74,7 @@ PARAM_DEFINE_INT32(SYS_AUTOCONFIG, 0);
  * @max 1
  * @group System
  */
-PARAM_DEFINE_INT32(SYS_USE_IO, 1);
+PARAM_DEFINE_INT32(SYS_USE_IO, 0);
 
 /**
  * Set restart type
@@ -129,7 +129,7 @@ PARAM_DEFINE_INT32(SYS_MC_EST_GROUP, 1);
  * @reboot_required true
  * @group System
  */
-PARAM_DEFINE_INT32(SYS_COMPANION, 157600);
+PARAM_DEFINE_INT32(SYS_COMPANION, 0);
 
 /**
  * Parameter version
