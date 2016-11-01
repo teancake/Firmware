@@ -280,7 +280,7 @@ out:
 static bool baroCheck(orb_advert_t *mavlink_log_pub, unsigned instance, bool optional, int &device_id, bool report_fail)
 {
 	bool success = true;
-
+        return success;
 	char s[30];
 	sprintf(s, "%s%u", BARO_BASE_DEVICE_PATH, instance);
 	DevHandle h;
