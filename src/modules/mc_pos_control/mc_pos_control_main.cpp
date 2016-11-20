@@ -2198,6 +2198,58 @@ int mc_pos_control_main(int argc, char *argv[])
 	if (!strcmp(argv[1], "status")) {
 		if (pos_control::g_control) {
 			warnx("running");
+
+			//int error_counter=0;
+			int manual_sub=orb_subscribe(ORB_ID(manual_control_setpoint));
+			struct manual_control_setpoint_s manual;
+
+			//px4_pollfd_struct_t fds[] = {
+			//		{ .fd=manual_sub,	.events=POLLIN },
+			//};
+
+			while(1)
+			{
+				//int poll_ret = px4_poll(fds,1,200);
+
+				/*if(poll_ret==0)
+				{
+					PX4_ERR("Got no data within a second");
+				}
+				else if(poll_ret<0)
+				{
+					if (error_counter < 10 || error_counter % 50 == 0)
+					{
+						PX4_ERR("ERROR return value from poll(): %d", poll_ret);
+					}
+					error_counter++;
+				}
+				else
+				{
+					if(fds[0].revents & POLLIN)
+					{	*/
+						orb_copy(ORB_ID(manual_control_setpoint),manual_sub,&manual);
+						warnx("manual:x=%.2f,y=%.2f,z=%.2f",(double)manual.x,(double)manual.y,(double)manual.z);
+				//	}
+				//}
+				warnx("==========press CTRL+C to abort==========");
+				char c;
+				struct pollfd fds;
+				int ret;
+				fds.fd=0;
+				fds.events=POLLIN;
+				ret=poll(&fds,1,0);
+				if(ret>0)
+				{
+					read(0,&c,1);
+					if(c==0x03||c==0x63||c=='q')
+					{
+						warnx("User abort\n");
+						break;
+					}
+				}
+				usleep(800000);		//500ms
+			}
+
 			return 0;
 
 		} else {
