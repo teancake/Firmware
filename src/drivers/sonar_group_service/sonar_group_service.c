@@ -139,10 +139,10 @@ int sonargroup_service_thread_main(int argc, char *argv[])
     if(false == uart_fd)
     	return -1;
     if(false == set_uart_baudrate(uart_fd,9600)){
-        printf("[SONAR_GROUP]set_uart_baudrate is failed\n");
+        warnx("[SONAR_GROUP]set_uart_baudrate is failed\n");
         return -1;
     }
-    printf("[SONAR_GROUP]UART init is successful\n");
+    warnx("[SONAR_GROUP]UART init is successful\n");
     //static int count1=0;
     //线程启动标志
     thread_running = true;
@@ -152,7 +152,7 @@ int sonargroup_service_thread_main(int argc, char *argv[])
     //公告主题
     orb_advert_t SonarGroupDistance_pub = orb_advertise(ORB_ID(sonar_distance), &sonar);
 
-    printf("[SONAR_GROUP]service start successfully\n");
+    warnx("[SONAR_GROUP]service start successfully\n");
     SRF01(uart_fd,0,ADVANCEDMODE);
     usleep(1000);
     //获取所有超声波距离 Sonar_group GetRangeAll

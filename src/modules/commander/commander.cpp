@@ -1919,7 +1919,8 @@ int commander_thread_main(int argc, char *argv[])
 				}
 
 				/* copy avionics voltage */
-				avionics_power_rail_voltage = system_power.voltage5V_v;
+				//avionics_power_rail_voltage = system_power.voltage5V_v;
+				avionics_power_rail_voltage = 5;
 
 				/* if the USB hardware connection went away, reboot */
 				if (status_flags.usb_connected && !system_power.usb_connected) {
