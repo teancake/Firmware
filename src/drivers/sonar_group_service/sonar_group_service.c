@@ -161,7 +161,7 @@ int sonargroup_service_thread_main(int argc, char *argv[])
         SRF01(uart_fd,0,RANGE_CM);
         //wait 70ms to recive the respons
         usleep(50000);
-        for (int i=1;i<=2;i++)
+        for (int i=1;i<=1;i++)
         {
             int range=GetRange_new(uart_fd,i);
             //printf("[SONAR_GROUP]Range(%d)=%d(cm)\n",i,range);

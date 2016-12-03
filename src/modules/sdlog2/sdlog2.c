@@ -111,6 +111,7 @@
 #include <uORB/topics/vehicle_land_detected.h>
 #include <uORB/topics/commander_state.h>
 #include <uORB/topics/cpuload.h>
+#include <uORB/topics/sonar_distance.h>
 
 #include <systemlib/systemlib.h>
 #include <systemlib/param/param.h>
@@ -1222,6 +1223,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 		struct vehicle_land_detected_s land_detected;
 		struct cpuload_s cpuload;
 		struct vehicle_gps_position_s dual_gps_pos;
+		struct sonar_distance_s sonar;
 	} buf;
 
 	memset(&buf, 0, sizeof(buf));
@@ -1283,6 +1285,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 			struct log_LAND_s log_LAND;
 			struct log_RPL6_s log_RPL6;
 			struct log_LOAD_s log_LOAD;
+			struct log_ALT_s log_SONAR;
 		} body;
 	} log_msg = {
 		LOG_PACKET_HEADER_INIT(0)
@@ -1332,6 +1335,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 		int land_detected_sub;
 		int commander_state_sub;
 		int cpuload_sub;
+		int sonar_sub;
 	} subs;
 
 	subs.cmd_sub = -1;
@@ -1374,6 +1378,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 	subs.land_detected_sub = -1;
 	subs.commander_state_sub = -1;
 	subs.cpuload_sub = -1;
+	subs.sonar_sub = -1;		//sonar
 
 	/* add new topics HERE */
 
@@ -2280,6 +2285,15 @@ int sdlog2_thread_main(int argc, char *argv[])
 			log_msg.body.log_ATT.pitch_rate = buf.att.pitchspeed;
 			log_msg.body.log_ATT.yaw_rate = buf.att.yawspeed;
 			LOGBUFFER_WRITE_AND_COUNT(ATT);
+		}
+
+		/*sonar distance*/
+		if(copy_if_updated(ORB_ID(sonar_distance), &subs.sonar_sub, &buf.sonar))
+		{
+			log_msg.msg_type = LOG_ALT_MSG;
+			log_msg.body.log_SONAR.distance = buf.sonar.distance[0]/100.0f;
+			log_msg.body.log_SONAR.status = buf.sonar.status[0];
+			LOGBUFFER_WRITE_AND_COUNT(ALT);
 		}
 
 		/* --- CAMERA TRIGGER --- */

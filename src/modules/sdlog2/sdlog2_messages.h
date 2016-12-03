@@ -50,6 +50,7 @@
 
 #pragma pack(push, 1)
 /* --- ATT - ATTITUDE --- */
+
 #define LOG_ATT_MSG 2
 struct log_ATT_s {
 	float q_w;
@@ -163,6 +164,7 @@ struct log_GPS_s {
 };
 
 /* --- ATTC - ATTITUDE CONTROLS (ACTUATOR_0 CONTROLS)--- */
+
 #define LOG_ATTC_MSG 9
 #define LOG_ATC1_MSG 46
 struct log_ATTC_s {
@@ -623,6 +625,14 @@ struct log_LOAD_s {
 	float cpu_load;
 };
 
+/*IFFPC sonar */
+#define LOG_ALT_MSG 62
+struct log_ALT_s
+{
+	float distance;
+	bool status;
+};
+
 /********** SYSTEM MESSAGES, ID > 0x80 **********/
 
 /* --- TIME - TIME STAMP --- */
@@ -712,6 +722,7 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(RPL6, "Qff", "Tasp,inAsp,trAsp"),
 	LOG_FORMAT(LAND, "B", "Landed"),
 	LOG_FORMAT(LOAD, "f", "CPU"),
+	LOG_FORMAT(ALT, "fB","Alt,state"),
 	/* system-level messages, ID >= 0x80 */
 	/* FMT: don't write format of format message, it's useless */
 	LOG_FORMAT(TIME, "Q", "StartTime"),

@@ -95,6 +95,8 @@
 #define ONE_G	9.8066f
 
 float ref_height1,height1;
+//uint64_t time1;
+//int count=0;
 //bool flag_auto;
 //float P=0,I=0,D=0;
 /**
@@ -703,13 +705,13 @@ MulticopterPositionControl::poll_subscriptions()
 		orb_copy(ORB_ID(vehicle_local_position), _local_pos_sub, &_local_pos);
 	}
 
+	/*
 	orb_check(_sonar_sub,&updated);
 
 	if(updated)
 	{
 		orb_copy(ORB_ID(sonar_distance), _sonar_sub, &sonar);
-		//_local_pos.ref_alt=sonar.distance[0]/100.0;
-	}
+	}	*/
 }
 
 float
@@ -832,13 +834,25 @@ MulticopterPositionControl::caculate_thrust(float *thrust)
 	//static float thrust1;
 	static bool flag_auto_first=true;		//first
 	static float current_thrust;
+	static float thrust_pre;
+
+	bool updated;
+	orb_check(_sonar_sub, &updated);
+	if(updated)
+	{
+		//count++;
+		//time1=hrt_absolute_time()/1000;
+		orb_copy(ORB_ID(sonar_distance), _sonar_sub, &sonar);
+	}
 
 	if(_manual.z<0.5f||_manual.z>0.5f)		//manual control
 	{
 		*thrust=_manual.z;
+		if(*thrust>0.8f)
+			*thrust=0.8f;
 		//flag_auto_altitude=false;
 		ref_height=sonar.distance[0]/100.0f;
-		//ref_height1=ref_height;
+		ref_height1=ref_height;
 		//ref_height=0.7f;
 		current_thrust=*thrust;
 		error_pre=0;
@@ -855,32 +869,40 @@ MulticopterPositionControl::caculate_thrust(float *thrust)
 			Derivative=0;
 			Integral=current_thrust;
 			*thrust=Integral;
+			thrust_pre=*thrust;
 		}
 		else
 		{
-			height=sonar.distance[0]/100.0f;
-			//height1=height;
-			//height=0.6f;
-			error=ref_height-height;
+			if(updated)
+			{
+				height=sonar.distance[0]/100.0f;
+				height1=height;
+				error=ref_height-height;
 
-			Proportion=_params.pos_p(2)*error;
-			Integral+=_params.vel_i(2)*error;
-			Derivative=_params.vel_d(2)*(error-error_pre);
+				Proportion=_params.pos_p(2)*error;
+				Integral+=_params.vel_i(2)*error;
+				Derivative=_params.vel_d(2)*(error-error_pre);
 
-			if(Integral>0.48f)
-				Integral=0.48f;
+				if(Integral>0.7f)
+					Integral=0.7f;
 
-			if(Integral<0.42f)
-				Integral=0.42f;
+				if(Integral<0.45f)
+					Integral=0.45f;
 
-			*thrust=Proportion+Integral+Derivative;
+				*thrust=Proportion+Integral+Derivative;
 
-			if(*thrust>0.8f)
-				*thrust=0.8f;
-			//else if(*thrust<0.3f)
-			//	*thrust=0.3f;
+				if(*thrust>0.8f)
+					*thrust=0.8f;
+				else if(*thrust<0.43f)
+					*thrust=0.43f;
 
-			error_pre=error;
+				error_pre=error;
+				thrust_pre=*thrust;
+			}
+			else
+			{
+				*thrust=thrust_pre;
+			}
 		}
 	}
 	/*P=_params.pos_p(2);
@@ -2201,6 +2223,7 @@ MulticopterPositionControl::task_main()
 
 			if (_att_sp_pub != nullptr) {
 				caculate_thrust(&_att_sp.thrust);
+				//_att_sp.thrust=0.7f;
 				orb_publish(_attitude_setpoint_id, _att_sp_pub, &_att_sp);
 
 			} else if (_attitude_setpoint_id) {
@@ -2325,7 +2348,9 @@ int mc_pos_control_main(int argc, char *argv[])
 						//orb_copy(ORB_ID(vehicle_local_position),position_sub,&position);
 						orb_copy(ORB_ID(vehicle_attitude_setpoint), v_att_sp_sub, &v_att_sp);
 						orb_copy(ORB_ID(vehicle_rates_setpoint), v_rates_sp_sub, &v_rates_sp);
+
 						//warnx("PID: [P=%.3f,I=%.3f,D=%.3f]", (double)P,(double)I,(double)D);
+						//warnx("Debug:time=%ld,count=%d",time1,count);
 						warnx("Alt:ref_height=%.2f,height=%.2f",(double)ref_height1,(double)height1);
 						warnx("Manual:x=%.2f,y=%.2f,z=%.2f",(double)manual.x,(double)manual.y,(double)manual.z);
 						//warnx("Position:x=%.2f,y=%.2f,z=%.2f",(double)position.x,(double)position.y,(double)position.z);
