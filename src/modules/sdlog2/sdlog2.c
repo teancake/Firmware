@@ -106,12 +106,13 @@
 #include <uORB/topics/time_offset.h>
 #include <uORB/topics/mc_att_ctrl_status.h>
 #include <uORB/topics/ekf2_innovations.h>
-#include <uORB/topics/camera_trigger.h>
+//#include <uORB/topics/camera_trigger.h>
 #include <uORB/topics/ekf2_replay.h>
 #include <uORB/topics/vehicle_land_detected.h>
 #include <uORB/topics/commander_state.h>
 #include <uORB/topics/cpuload.h>
 #include <uORB/topics/sonar_distance.h>
+//#include <uORB/topics/alt_ctrl.h>
 
 #include <systemlib/systemlib.h>
 #include <systemlib/param/param.h>
@@ -125,6 +126,9 @@
 #include "sdlog2_format.h"
 #include "sdlog2_messages.h"
 
+
+//float thrust,alt_sp,alt_now;
+//unsigned int count=0;
 #define PX4_EPOCH_SECS 1234567890L
 
 #define LOGBUFFER_WRITE_AND_COUNT(_msg) pthread_mutex_lock(&logbuffer_mutex); \
@@ -1218,12 +1222,13 @@ int sdlog2_thread_main(int argc, char *argv[])
 		struct mc_att_ctrl_status_s mc_att_ctrl_status;
 		struct control_state_s ctrl_state;
 		struct ekf2_innovations_s innovations;
-		struct camera_trigger_s camera_trigger;
+		//struct camera_trigger_s camera_trigger;
 		struct ekf2_replay_s replay;
 		struct vehicle_land_detected_s land_detected;
 		struct cpuload_s cpuload;
 		struct vehicle_gps_position_s dual_gps_pos;
 		struct sonar_distance_s sonar;
+		//struct alt_ctrl_s alt_control;
 	} buf;
 
 	memset(&buf, 0, sizeof(buf));
@@ -1275,7 +1280,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 			struct log_CTS_s log_CTS;
 			struct log_EST4_s log_INO1;
 			struct log_EST5_s log_INO2;
-			struct log_CAMT_s log_CAMT;
+			//struct log_CAMT_s log_CAMT;
 			struct log_RPL1_s log_RPL1;
 			struct log_RPL2_s log_RPL2;
 			struct log_EST6_s log_INO3;
@@ -1285,7 +1290,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 			struct log_LAND_s log_LAND;
 			struct log_RPL6_s log_RPL6;
 			struct log_LOAD_s log_LOAD;
-			struct log_ALT_s log_SONAR;
+			struct log_ALT_s log_ALT;
 		} body;
 	} log_msg = {
 		LOG_PACKET_HEADER_INIT(0)
@@ -1330,12 +1335,13 @@ int sdlog2_thread_main(int argc, char *argv[])
 		int mc_att_ctrl_status_sub;
 		int ctrl_state_sub;
 		int innov_sub;
-		int cam_trig_sub;
+		//int cam_trig_sub;
 		int replay_sub;
 		int land_detected_sub;
 		int commander_state_sub;
 		int cpuload_sub;
 		int sonar_sub;
+	//	int alt_ctrl_sub;
 	} subs;
 
 	subs.cmd_sub = -1;
@@ -1373,12 +1379,13 @@ int sdlog2_thread_main(int argc, char *argv[])
 	subs.mc_att_ctrl_status_sub = -1;
 	subs.ctrl_state_sub = -1;
 	subs.innov_sub = -1;
-	subs.cam_trig_sub = -1;
+	//subs.cam_trig_sub = -1;
 	subs.replay_sub = -1;
 	subs.land_detected_sub = -1;
 	subs.commander_state_sub = -1;
 	subs.cpuload_sub = -1;
 	subs.sonar_sub = -1;		//sonar
+	//subs.alt_ctrl_sub = -1;
 
 	/* add new topics HERE */
 
@@ -2291,18 +2298,27 @@ int sdlog2_thread_main(int argc, char *argv[])
 		if(copy_if_updated(ORB_ID(sonar_distance), &subs.sonar_sub, &buf.sonar))
 		{
 			log_msg.msg_type = LOG_ALT_MSG;
-			log_msg.body.log_SONAR.distance = buf.sonar.distance[0]/100.0f;
-			log_msg.body.log_SONAR.status = buf.sonar.status[0];
+			//log_msg.body.log_ALT.alt_sp = buf.alt_control.alt_sp;
+			//log_msg.body.log_ALT.alt_measure = buf.alt_control.alt_measure;
+			//log_msg.body.log_ALT.thrust = buf.alt_control.thrust;
+
+			log_msg.body.log_ALT.distance = buf.sonar.distance[0]/100.0f;
+			log_msg.body.log_ALT.status = buf.sonar.status;
 			LOGBUFFER_WRITE_AND_COUNT(ALT);
+
+	/*		thrust = buf.alt_control.thrust;
+			alt_sp = buf.alt_control.alt_sp;
+			alt_now = buf.alt_control.alt_measure;
+			count++;	*/
 		}
 
 		/* --- CAMERA TRIGGER --- */
-		if (copy_if_updated(ORB_ID(camera_trigger), &subs.cam_trig_sub, &buf.camera_trigger)) {
+		/*if (copy_if_updated(ORB_ID(camera_trigger), &subs.cam_trig_sub, &buf.camera_trigger)) {
 			log_msg.msg_type = LOG_CAMT_MSG;
 			log_msg.body.log_CAMT.timestamp = buf.camera_trigger.timestamp;
 			log_msg.body.log_CAMT.seq = buf.camera_trigger.seq;
 			LOGBUFFER_WRITE_AND_COUNT(CAMT);
-		}
+		}	*/
 
 		/* --- LAND DETECTED --- */
 		if (copy_if_updated(ORB_ID(vehicle_land_detected), &subs.land_detected_sub, &buf.land_detected)) {
@@ -2360,6 +2376,28 @@ void sdlog2_status()
 
 		PX4_WARN("wrote %lu msgs, %4.2f MiB (average %5.3f KiB/s), skipped %lu msgs", log_msgs_written, (double)mebibytes, (double)(kibibytes / seconds), log_msgs_skipped);
 		mavlink_log_info(&mavlink_log_pub, "[blackbox] wrote %lu msgs, skipped %lu msgs", log_msgs_written, log_msgs_skipped);
+		while(1)
+		{
+			//warnx("[SD] thrust=%.2f alt_sp=%.2f alt_now=%.2f count=%d",(double)thrust,(double)alt_sp,(double)alt_now,count);
+
+			warnx("============press CTRL+C to abort============");
+			char c;
+			struct pollfd fds;
+			int ret;
+			fds.fd=0;
+			fds.events=POLLIN;
+			ret=poll(&fds,1,0);
+			if(ret>0)
+			{
+				read(0,&c,1);
+				if(c==0x03||c==0x63||c=='q')
+				{
+					warnx("User abort\n");
+					break;
+				}
+			}
+			usleep(600000);
+		}
 	}
 }
 

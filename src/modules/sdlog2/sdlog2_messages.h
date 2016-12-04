@@ -574,11 +574,12 @@ struct log_RPL3_s {
 };
 
 /* --- CAMERA TRIGGER --- */
+/*
 #define LOG_CAMT_MSG 55
 struct log_CAMT_s {
 	uint64_t timestamp;
 	uint32_t seq;
-};
+};	*/
 
 /* --- EKF2 REPLAY Part 4 --- */
 #define LOG_RPL4_MSG 56
@@ -626,6 +627,16 @@ struct log_LOAD_s {
 };
 
 /*IFFPC sonar */
+/*
+#define LOG_ALT_MSG 62
+struct log_ALT_s
+{
+	float alt_sp;
+	float alt_measure;
+	float thrust;
+};	*/
+
+
 #define LOG_ALT_MSG 62
 struct log_ALT_s
 {
@@ -713,7 +724,7 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(ENCD, "qfqf",	"cnt0,vel0,cnt1,vel1"),
 	LOG_FORMAT(TSYN, "Q", 		"TimeOffset"),
 	LOG_FORMAT(MACS, "fff", "RRint,PRint,YRint"),
-	LOG_FORMAT(CAMT, "QI", "timestamp,seq"),
+	//LOG_FORMAT(CAMT, "QI", "timestamp,seq"),
 	LOG_FORMAT(RPL1, "QffQQffffffffff", "t,gIdt,aIdt,Tm,Tb,gx,gy,gz,ax,ay,az,magX,magY,magZ,b_alt"),
 	LOG_FORMAT(RPL2, "QQLLiMMfffffffM", "Tpos,Tvel,lat,lon,alt,fix,nsats,eph,epv,sacc,v,vN,vE,vD,v_val"),
 	LOG_FORMAT(RPL3, "QffffIB", "Tflow,fx,fy,gx,gy,delT,qual"),
@@ -722,7 +733,8 @@ static const struct log_format_s log_formats[] = {
 	LOG_FORMAT(RPL6, "Qff", "Tasp,inAsp,trAsp"),
 	LOG_FORMAT(LAND, "B", "Landed"),
 	LOG_FORMAT(LOAD, "f", "CPU"),
-	LOG_FORMAT(ALT, "fB","Alt,state"),
+	//LOG_FORMAT(ALT, "fff","alt_sp,alt_now,thrust"),
+	LOG_FORMAT(ALT, "fB","alt,state"),
 	/* system-level messages, ID >= 0x80 */
 	/* FMT: don't write format of format message, it's useless */
 	LOG_FORMAT(TIME, "Q", "StartTime"),

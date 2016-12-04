@@ -51,6 +51,7 @@
 #include <uORB/topics/vehicle_attitude.h>
 #include <uORB/topics/sonar_distance.h>
 #include <uORB/topics/manual_control_setpoint.h>
+//#include <uORB/topics/alt_ctrl.h>
 
 __EXPORT int px4_simple_app_main(int argc, char *argv[]);
 
@@ -69,6 +70,10 @@ int px4_simple_app_main(int argc, char *argv[])
 	orb_set_interval(sensor_sub_fd, 50);	// limit the update rate to 5 Hz
 	struct sonar_distance_s sonar;
 	memset(&sonar, 0, sizeof(sonar));
+
+	//int alt_ctrl_sub_ = orb_subscribe(ORB_ID(alt_ctrl));
+	//struct alt_ctrl_s alt_control;
+	//memset(&alt_control,0,sizeof(alt_control));
 
 	/*int sensor_sub_fd=orb_subscribe(ORB_ID(manual_control_setpoint));
 	struct manual_control_setpoint_s manual;
@@ -112,11 +117,14 @@ int px4_simple_app_main(int argc, char *argv[])
 				//struct sonar_distance_s raw;
 				/* copy sensors raw data into local buffer */
 				orb_copy(ORB_ID(sonar_distance), sensor_sub_fd, &sonar);
+				//orb_copy(ORB_ID(alt_ctrl), alt_ctrl_sub_, &alt_control);
+
 				//printf("----------------------------------\n");
 				for(int j=1;j<=1;j++)
 				{
 					printf("[SONAR]Range(%d)=%d(cm)\n",j,sonar.distance[j-1]);
 					printf("[SONAR]status(%d)=%d\n",j,sonar.status[j-1]);
+					//warnx("[SD] thrust=%.2f alt_sp=%.2f alt_now=%.2f",(double)alt_control.thrust,(double)alt_control.alt_sp,(double)alt_control.alt_measure);
 					printf("=========Press CTRL+C to abort=========\n");
 				}
 
