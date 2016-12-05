@@ -149,6 +149,7 @@ int sonargroup_service_thread_main(int argc, char *argv[])
     //初始化数据结构体
     struct sonar_distance_s sonar;
     memset(&sonar, 0, sizeof(sonar));
+    sonar.count=0;
     //公告主题
     orb_advert_t SonarGroupDistance_pub = orb_advertise(ORB_ID(sonar_distance), &sonar);
 
@@ -169,7 +170,8 @@ int sonargroup_service_thread_main(int argc, char *argv[])
             {
                 sonar.distance[i-1]=range;
                 sonar.status[i-1]=1;
-            }else
+            }
+            else
             {
                 sonar.status[i-1]=0;
             }
@@ -178,6 +180,10 @@ int sonargroup_service_thread_main(int argc, char *argv[])
         //sonardata.time=hrt_absolute_time()/1000;
         //count1++;
         //sonardata.count=count1;
+        sonar.count++;
+        if(sonar.count==6)
+        	sonar.count=1;
+
         orb_publish(ORB_ID(sonar_distance), SonarGroupDistance_pub, &sonar);
     }
     //关闭线程，串口
