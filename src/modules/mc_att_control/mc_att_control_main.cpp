@@ -823,7 +823,7 @@ MulticopterAttitudeControl::task_main()
 {
 
 	/*
-	 * do subscriptions
+	 * do subscriptions haha
 	 */
 	_v_att_sp_sub = orb_subscribe(ORB_ID(vehicle_attitude_setpoint));
 	_v_rates_sp_sub = orb_subscribe(ORB_ID(vehicle_rates_setpoint));

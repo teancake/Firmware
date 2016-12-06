@@ -952,3 +952,5 @@ then
 fi
 unset EXIT_ON_END
 mavlink start -r 20000 -m config -b 921600 -d /dev/ttyS2
+sonargroup_service start
+mavlink stream -r 50 -s SONARGROUP -u 14556

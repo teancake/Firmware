@@ -101,16 +101,18 @@
 #include <uORB/topics/tecs_status.h>
 #include <uORB/topics/system_power.h>
 #include <uORB/topics/servorail_status.h>
-#include <uORB/topics/wind_estimate.h>
+//#include <uORB/topics/wind_estimate.h>
 #include <uORB/topics/vtol_vehicle_status.h>
 #include <uORB/topics/time_offset.h>
 #include <uORB/topics/mc_att_ctrl_status.h>
 #include <uORB/topics/ekf2_innovations.h>
-#include <uORB/topics/camera_trigger.h>
+//#include <uORB/topics/camera_trigger.h>
 #include <uORB/topics/ekf2_replay.h>
 #include <uORB/topics/vehicle_land_detected.h>
 #include <uORB/topics/commander_state.h>
 #include <uORB/topics/cpuload.h>
+#include <uORB/topics/sonar_distance.h>
+//#include <uORB/topics/alt_ctrl.h>
 
 #include <systemlib/systemlib.h>
 #include <systemlib/param/param.h>
@@ -124,6 +126,9 @@
 #include "sdlog2_format.h"
 #include "sdlog2_messages.h"
 
+
+//float thrust,alt_sp,alt_now;
+//unsigned int count=0;
 #define PX4_EPOCH_SECS 1234567890L
 
 #define LOGBUFFER_WRITE_AND_COUNT(_msg) pthread_mutex_lock(&logbuffer_mutex); \
@@ -1195,33 +1200,35 @@ int sdlog2_thread_main(int argc, char *argv[])
 		struct vehicle_local_position_setpoint_s local_pos_sp;
 		struct vehicle_global_position_s global_pos;
 		struct position_setpoint_triplet_s triplet;
-		struct att_pos_mocap_s att_pos_mocap;
-		struct vision_position_estimate_s vision_pos;
-		struct optical_flow_s flow;
+		//struct att_pos_mocap_s att_pos_mocap;
+		//struct vision_position_estimate_s vision_pos;
+		//struct optical_flow_s flow;
 		struct rc_channels_s rc;
 		struct differential_pressure_s diff_pres;
 		struct airspeed_s airspeed;
 		struct esc_status_s esc;
 		struct vehicle_global_velocity_setpoint_s global_vel_sp;
 		struct battery_status_s battery;
-		struct telemetry_status_s telemetry;
-		struct distance_sensor_s distance_sensor;
+		//struct telemetry_status_s telemetry;
+		//struct distance_sensor_s distance_sensor;
 		struct estimator_status_s estimator_status;
 		struct tecs_status_s tecs_status;
 		struct system_power_s system_power;
 		struct servorail_status_s servorail_status;
-		struct satellite_info_s sat_info;
-		struct wind_estimate_s wind_estimate;
-		struct vtol_vehicle_status_s vtol_status;
+		//struct satellite_info_s sat_info;
+		//struct wind_estimate_s wind_estimate;
+		//struct vtol_vehicle_status_s vtol_status;
 		struct time_offset_s time_offset;
 		struct mc_att_ctrl_status_s mc_att_ctrl_status;
 		struct control_state_s ctrl_state;
 		struct ekf2_innovations_s innovations;
-		struct camera_trigger_s camera_trigger;
+		//struct camera_trigger_s camera_trigger;
 		struct ekf2_replay_s replay;
 		struct vehicle_land_detected_s land_detected;
 		struct cpuload_s cpuload;
 		struct vehicle_gps_position_s dual_gps_pos;
+		struct sonar_distance_s sonar;
+		//struct alt_ctrl_s alt_control;
 	} buf;
 
 	memset(&buf, 0, sizeof(buf));
@@ -1241,39 +1248,39 @@ int sdlog2_thread_main(int argc, char *argv[])
 			struct log_GPS_s log_GPS;
 			struct log_ATTC_s log_ATTC;
 			struct log_STAT_s log_STAT;
-			struct log_VTOL_s log_VTOL;
+			//struct log_VTOL_s log_VTOL;
 			struct log_RC_s log_RC;
 			struct log_OUT_s log_OUT;
 			struct log_AIRS_s log_AIRS;
 			struct log_ARSP_s log_ARSP;
-			struct log_FLOW_s log_FLOW;
+			//struct log_FLOW_s log_FLOW;
 			struct log_GPOS_s log_GPOS;
 			struct log_GPSP_s log_GPSP;
 			struct log_ESC_s log_ESC;
 			struct log_GVSP_s log_GVSP;
 			struct log_BATT_s log_BATT;
-			struct log_DIST_s log_DIST;
-			struct log_TEL_s log_TEL;
+			//struct log_DIST_s log_DIST;
+			//struct log_TEL_s log_TEL;
 			struct log_EST0_s log_EST0;
 			struct log_EST1_s log_EST1;
 			struct log_EST2_s log_EST2;
 			struct log_EST3_s log_EST3;
 			struct log_PWR_s log_PWR;
-			struct log_MOCP_s log_MOCP;
-			struct log_VISN_s log_VISN;
-			struct log_GS0A_s log_GS0A;
-			struct log_GS0B_s log_GS0B;
-			struct log_GS1A_s log_GS1A;
-			struct log_GS1B_s log_GS1B;
+			//struct log_MOCP_s log_MOCP;
+			//struct log_VISN_s log_VISN;
+			//struct log_GS0A_s log_GS0A;
+			//struct log_GS0B_s log_GS0B;
+			//struct log_GS1A_s log_GS1A;
+			//struct log_GS1B_s log_GS1B;
 			struct log_TECS_s log_TECS;
-			struct log_WIND_s log_WIND;
+			//struct log_WIND_s log_WIND;
 			struct log_ENCD_s log_ENCD;
 			struct log_TSYN_s log_TSYN;
 			struct log_MACS_s log_MACS;
 			struct log_CTS_s log_CTS;
 			struct log_EST4_s log_INO1;
 			struct log_EST5_s log_INO2;
-			struct log_CAMT_s log_CAMT;
+			//struct log_CAMT_s log_CAMT;
 			struct log_RPL1_s log_RPL1;
 			struct log_RPL2_s log_RPL2;
 			struct log_EST6_s log_INO3;
@@ -1283,6 +1290,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 			struct log_LAND_s log_LAND;
 			struct log_RPL6_s log_RPL6;
 			struct log_LOAD_s log_LOAD;
+			struct log_ALT_s log_ALT;
 		} body;
 	} log_msg = {
 		LOG_PACKET_HEADER_INIT(0)
@@ -1293,7 +1301,7 @@ int sdlog2_thread_main(int argc, char *argv[])
 	struct {
 		int cmd_sub;
 		int status_sub;
-		int vtol_status_sub;
+		//int vtol_status_sub;
 		int sensor_sub;
 		int att_sub;
 		int att_sp_sub;
@@ -1307,36 +1315,38 @@ int sdlog2_thread_main(int argc, char *argv[])
 		int global_pos_sub;
 		int triplet_sub;
 		int gps_pos_sub[2];
-		int sat_info_sub;
-		int att_pos_mocap_sub;
-		int vision_pos_sub;
-		int flow_sub;
+		//int sat_info_sub;
+		//int att_pos_mocap_sub;
+		//int vision_pos_sub;
+		//int flow_sub;
 		int rc_sub;
 		int airspeed_sub;
 		int esc_sub;
 		int global_vel_sp_sub;
 		int battery_sub;
-		int telemetry_subs[ORB_MULTI_MAX_INSTANCES];
-		int distance_sensor_sub;
+		//int telemetry_subs[ORB_MULTI_MAX_INSTANCES];
+		//int distance_sensor_sub;
 		int estimator_status_sub;
 		int tecs_status_sub;
 		int system_power_sub;
 		int servorail_status_sub;
-		int wind_sub;
+		//int wind_sub;
 		int tsync_sub;
 		int mc_att_ctrl_status_sub;
 		int ctrl_state_sub;
 		int innov_sub;
-		int cam_trig_sub;
+		//int cam_trig_sub;
 		int replay_sub;
 		int land_detected_sub;
 		int commander_state_sub;
 		int cpuload_sub;
+		int sonar_sub;
+	//	int alt_ctrl_sub;
 	} subs;
 
 	subs.cmd_sub = -1;
 	subs.status_sub = -1;
-	subs.vtol_status_sub = -1;
+	//subs.vtol_status_sub = -1;
 	subs.gps_pos_sub[0] = -1;
 	subs.gps_pos_sub[1] = -1;
 	subs.sensor_sub = -1;
@@ -1351,38 +1361,40 @@ int sdlog2_thread_main(int argc, char *argv[])
 	subs.local_pos_sp_sub = -1;
 	subs.global_pos_sub = -1;
 	subs.triplet_sub = -1;
-	subs.att_pos_mocap_sub = -1;
-	subs.vision_pos_sub = -1;
-	subs.flow_sub = -1;
+	//subs.att_pos_mocap_sub = -1;
+	//subs.vision_pos_sub = -1;
+	//subs.flow_sub = -1;
 	subs.rc_sub = -1;
 	subs.airspeed_sub = -1;
 	subs.esc_sub = -1;
 	subs.global_vel_sp_sub = -1;
 	subs.battery_sub = -1;
-	subs.distance_sensor_sub = -1;
+	//subs.distance_sensor_sub = -1;
 	subs.estimator_status_sub = -1;
 	subs.tecs_status_sub = -1;
 	subs.system_power_sub = -1;
 	subs.servorail_status_sub = -1;
-	subs.wind_sub = -1;
+	//subs.wind_sub = -1;
 	subs.tsync_sub = -1;
 	subs.mc_att_ctrl_status_sub = -1;
 	subs.ctrl_state_sub = -1;
 	subs.innov_sub = -1;
-	subs.cam_trig_sub = -1;
+	//subs.cam_trig_sub = -1;
 	subs.replay_sub = -1;
 	subs.land_detected_sub = -1;
 	subs.commander_state_sub = -1;
 	subs.cpuload_sub = -1;
+	subs.sonar_sub = -1;		//sonar
+	//subs.alt_ctrl_sub = -1;
 
 	/* add new topics HERE */
 
 
-	for (unsigned i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
-		subs.telemetry_subs[i] = -1;
-	}
+//	for (unsigned i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+//		subs.telemetry_subs[i] = -1;
+//	}
 
-	subs.sat_info_sub = -1;
+	//subs.sat_info_sub = -1;
 
 	/* initialize thread synchronization */
 	pthread_mutex_init(&logbuffer_mutex, NULL);
@@ -1730,14 +1742,14 @@ int sdlog2_thread_main(int argc, char *argv[])
 			}
 
 			/* --- VTOL VEHICLE STATUS --- */
-			if(copy_if_updated(ORB_ID(vtol_vehicle_status), &subs.vtol_status_sub, &buf.vtol_status)) {
-				log_msg.msg_type = LOG_VTOL_MSG;
-				log_msg.body.log_VTOL.airspeed_tot = buf.vtol_status.airspeed_tot;
-				log_msg.body.log_VTOL.rw_mode = buf.vtol_status.vtol_in_rw_mode;
-				log_msg.body.log_VTOL.trans_mode = buf.vtol_status.vtol_in_trans_mode;
-				log_msg.body.log_VTOL.failsafe_mode = buf.vtol_status.vtol_transition_failsafe;
-				LOGBUFFER_WRITE_AND_COUNT(VTOL);
-			}
+//			if(copy_if_updated(ORB_ID(vtol_vehicle_status), &subs.vtol_status_sub, &buf.vtol_status)) {
+//				log_msg.msg_type = LOG_VTOL_MSG;
+//				log_msg.body.log_VTOL.airspeed_tot = buf.vtol_status.airspeed_tot;
+//				log_msg.body.log_VTOL.rw_mode = buf.vtol_status.vtol_in_rw_mode;
+//				log_msg.body.log_VTOL.trans_mode = buf.vtol_status.vtol_in_trans_mode;
+//				log_msg.body.log_VTOL.failsafe_mode = buf.vtol_status.vtol_transition_failsafe;
+//				LOGBUFFER_WRITE_AND_COUNT(VTOL);
+//			}
 
 			/* --- GPS POSITION - UNIT #1 --- */
 			if (gps_pos_updated) {
@@ -1783,52 +1795,52 @@ int sdlog2_thread_main(int argc, char *argv[])
 			}
 
 			/* --- SATELLITE INFO - UNIT #1 --- */
-			if (_extended_logging) {
-
-				if (copy_if_updated(ORB_ID(satellite_info), &subs.sat_info_sub, &buf.sat_info)) {
-
-					/* log the SNR of each satellite for a detailed view of signal quality */
-					unsigned sat_info_count = SDLOG_MIN(buf.sat_info.count, sizeof(buf.sat_info.snr) / sizeof(buf.sat_info.snr[0]));
-					unsigned log_max_snr = sizeof(log_msg.body.log_GS0A.satellite_snr) / sizeof(log_msg.body.log_GS0A.satellite_snr[0]);
-
-					log_msg.msg_type = LOG_GS0A_MSG;
-					memset(&log_msg.body.log_GS0A, 0, sizeof(log_msg.body.log_GS0A));
-					snr_mean = 0.0f;
-
-					/* fill set A and calculate mean SNR */
-					for (unsigned i = 0; i < sat_info_count; i++) {
-
-						snr_mean += buf.sat_info.snr[i];
-
-						int satindex = buf.sat_info.svid[i] - 1;
-
-						/* handles index exceeding and wraps to to arithmetic errors */
-						if ((satindex >= 0) && (satindex < (int)log_max_snr)) {
-							/* map satellites by their ID so that logs from two receivers can be compared */
-							log_msg.body.log_GS0A.satellite_snr[satindex] = buf.sat_info.snr[i];
-						}
-					}
-					LOGBUFFER_WRITE_AND_COUNT(GS0A);
-					snr_mean /= sat_info_count;
-
-					log_msg.msg_type = LOG_GS0B_MSG;
-					memset(&log_msg.body.log_GS0B, 0, sizeof(log_msg.body.log_GS0B));
-
-					/* fill set B */
-					for (unsigned i = 0; i < sat_info_count; i++) {
-
-						/* get second bank of satellites, thus deduct bank size from index */
-						int satindex = buf.sat_info.svid[i] - 1 - log_max_snr;
-
-						/* handles index exceeding and wraps to to arithmetic errors */
-						if ((satindex >= 0) && (satindex < (int)log_max_snr)) {
-							/* map satellites by their ID so that logs from two receivers can be compared */
-							log_msg.body.log_GS0B.satellite_snr[satindex] = buf.sat_info.snr[i];
-						}
-					}
-					LOGBUFFER_WRITE_AND_COUNT(GS0B);
-				}
-			}
+//			if (_extended_logging) {
+//
+//				if (copy_if_updated(ORB_ID(satellite_info), &subs.sat_info_sub, &buf.sat_info)) {
+//
+//					/* log the SNR of each satellite for a detailed view of signal quality */
+//					unsigned sat_info_count = SDLOG_MIN(buf.sat_info.count, sizeof(buf.sat_info.snr) / sizeof(buf.sat_info.snr[0]));
+//					unsigned log_max_snr = sizeof(log_msg.body.log_GS0A.satellite_snr) / sizeof(log_msg.body.log_GS0A.satellite_snr[0]);
+//
+//					log_msg.msg_type = LOG_GS0A_MSG;
+//					memset(&log_msg.body.log_GS0A, 0, sizeof(log_msg.body.log_GS0A));
+//					snr_mean = 0.0f;
+//
+//					/* fill set A and calculate mean SNR */
+//					for (unsigned i = 0; i < sat_info_count; i++) {
+//
+//						snr_mean += buf.sat_info.snr[i];
+//
+//						int satindex = buf.sat_info.svid[i] - 1;
+//
+//						/* handles index exceeding and wraps to to arithmetic errors */
+//						if ((satindex >= 0) && (satindex < (int)log_max_snr)) {
+//							/* map satellites by their ID so that logs from two receivers can be compared */
+//							log_msg.body.log_GS0A.satellite_snr[satindex] = buf.sat_info.snr[i];
+//						}
+//					}
+//					LOGBUFFER_WRITE_AND_COUNT(GS0A);
+//					snr_mean /= sat_info_count;
+//
+//					log_msg.msg_type = LOG_GS0B_MSG;
+//					memset(&log_msg.body.log_GS0B, 0, sizeof(log_msg.body.log_GS0B));
+//
+//					/* fill set B */
+//					for (unsigned i = 0; i < sat_info_count; i++) {
+//
+//						/* get second bank of satellites, thus deduct bank size from index */
+//						int satindex = buf.sat_info.svid[i] - 1 - log_max_snr;
+//
+//						/* handles index exceeding and wraps to to arithmetic errors */
+//						if ((satindex >= 0) && (satindex < (int)log_max_snr)) {
+//							/* map satellites by their ID so that logs from two receivers can be compared */
+//							log_msg.body.log_GS0B.satellite_snr[satindex] = buf.sat_info.snr[i];
+//						}
+//					}
+//					LOGBUFFER_WRITE_AND_COUNT(GS0B);
+//				}
+//			}
 
 			/* --- ATTITUDE SETPOINT --- */
 			if (copy_if_updated(ORB_ID(vehicle_attitude_setpoint), &subs.att_sp_sub, &buf.att_sp)) {
@@ -1979,49 +1991,49 @@ int sdlog2_thread_main(int argc, char *argv[])
 			}
 
 			/* --- MOCAP ATTITUDE AND POSITION --- */
-			if (copy_if_updated(ORB_ID(att_pos_mocap), &subs.att_pos_mocap_sub, &buf.att_pos_mocap)) {
-				log_msg.msg_type = LOG_MOCP_MSG;
-				log_msg.body.log_MOCP.qw = buf.att_pos_mocap.q[0];
-				log_msg.body.log_MOCP.qx = buf.att_pos_mocap.q[1];
-				log_msg.body.log_MOCP.qy = buf.att_pos_mocap.q[2];
-				log_msg.body.log_MOCP.qz = buf.att_pos_mocap.q[3];
-				log_msg.body.log_MOCP.x = buf.att_pos_mocap.x;
-				log_msg.body.log_MOCP.y = buf.att_pos_mocap.y;
-				log_msg.body.log_MOCP.z = buf.att_pos_mocap.z;
-				LOGBUFFER_WRITE_AND_COUNT(MOCP);
-			}
+//			if (copy_if_updated(ORB_ID(att_pos_mocap), &subs.att_pos_mocap_sub, &buf.att_pos_mocap)) {
+//				log_msg.msg_type = LOG_MOCP_MSG;
+//				log_msg.body.log_MOCP.qw = buf.att_pos_mocap.q[0];
+//				log_msg.body.log_MOCP.qx = buf.att_pos_mocap.q[1];
+//				log_msg.body.log_MOCP.qy = buf.att_pos_mocap.q[2];
+//				log_msg.body.log_MOCP.qz = buf.att_pos_mocap.q[3];
+//				log_msg.body.log_MOCP.x = buf.att_pos_mocap.x;
+//				log_msg.body.log_MOCP.y = buf.att_pos_mocap.y;
+//				log_msg.body.log_MOCP.z = buf.att_pos_mocap.z;
+//				LOGBUFFER_WRITE_AND_COUNT(MOCP);
+//			}
 
 			/* --- VISION POSITION --- */
-			if (copy_if_updated(ORB_ID(vision_position_estimate), &subs.vision_pos_sub, &buf.vision_pos)) {
-				log_msg.msg_type = LOG_VISN_MSG;
-				log_msg.body.log_VISN.x = buf.vision_pos.x;
-				log_msg.body.log_VISN.y = buf.vision_pos.y;
-				log_msg.body.log_VISN.z = buf.vision_pos.z;
-				log_msg.body.log_VISN.vx = buf.vision_pos.vx;
-				log_msg.body.log_VISN.vy = buf.vision_pos.vy;
-				log_msg.body.log_VISN.vz = buf.vision_pos.vz;
-				log_msg.body.log_VISN.qw = buf.vision_pos.q[0]; // vision_position_estimate uses [w,x,y,z] convention
-				log_msg.body.log_VISN.qx = buf.vision_pos.q[1];
-				log_msg.body.log_VISN.qy = buf.vision_pos.q[2];
-				log_msg.body.log_VISN.qz = buf.vision_pos.q[3];
-				LOGBUFFER_WRITE_AND_COUNT(VISN);
-			}
+//			if (copy_if_updated(ORB_ID(vision_position_estimate), &subs.vision_pos_sub, &buf.vision_pos)) {
+//				log_msg.msg_type = LOG_VISN_MSG;
+//				log_msg.body.log_VISN.x = buf.vision_pos.x;
+//				log_msg.body.log_VISN.y = buf.vision_pos.y;
+//				log_msg.body.log_VISN.z = buf.vision_pos.z;
+//				log_msg.body.log_VISN.vx = buf.vision_pos.vx;
+//				log_msg.body.log_VISN.vy = buf.vision_pos.vy;
+//				log_msg.body.log_VISN.vz = buf.vision_pos.vz;
+//				log_msg.body.log_VISN.qw = buf.vision_pos.q[0]; // vision_position_estimate uses [w,x,y,z] convention
+//				log_msg.body.log_VISN.qx = buf.vision_pos.q[1];
+//				log_msg.body.log_VISN.qy = buf.vision_pos.q[2];
+//				log_msg.body.log_VISN.qz = buf.vision_pos.q[3];
+//				LOGBUFFER_WRITE_AND_COUNT(VISN);
+//			}
 
 			/* --- FLOW --- */
-			if (copy_if_updated(ORB_ID(optical_flow), &subs.flow_sub, &buf.flow)) {
-				log_msg.msg_type = LOG_FLOW_MSG;
-				log_msg.body.log_FLOW.ground_distance_m = buf.flow.ground_distance_m;
-				log_msg.body.log_FLOW.gyro_temperature = buf.flow.gyro_temperature;
-				log_msg.body.log_FLOW.gyro_x_rate_integral = buf.flow.gyro_x_rate_integral;
-				log_msg.body.log_FLOW.gyro_y_rate_integral = buf.flow.gyro_y_rate_integral;
-				log_msg.body.log_FLOW.gyro_z_rate_integral = buf.flow.gyro_z_rate_integral;
-				log_msg.body.log_FLOW.integration_timespan = buf.flow.integration_timespan;
-				log_msg.body.log_FLOW.pixel_flow_x_integral = buf.flow.pixel_flow_x_integral;
-				log_msg.body.log_FLOW.pixel_flow_y_integral = buf.flow.pixel_flow_y_integral;
-				log_msg.body.log_FLOW.quality = buf.flow.quality;
-				log_msg.body.log_FLOW.sensor_id = buf.flow.sensor_id;
-				LOGBUFFER_WRITE_AND_COUNT(FLOW);
-			}
+//			if (copy_if_updated(ORB_ID(optical_flow), &subs.flow_sub, &buf.flow)) {
+//				log_msg.msg_type = LOG_FLOW_MSG;
+//				log_msg.body.log_FLOW.ground_distance_m = buf.flow.ground_distance_m;
+//				log_msg.body.log_FLOW.gyro_temperature = buf.flow.gyro_temperature;
+//				log_msg.body.log_FLOW.gyro_x_rate_integral = buf.flow.gyro_x_rate_integral;
+//				log_msg.body.log_FLOW.gyro_y_rate_integral = buf.flow.gyro_y_rate_integral;
+//				log_msg.body.log_FLOW.gyro_z_rate_integral = buf.flow.gyro_z_rate_integral;
+//				log_msg.body.log_FLOW.integration_timespan = buf.flow.integration_timespan;
+//				log_msg.body.log_FLOW.pixel_flow_x_integral = buf.flow.pixel_flow_x_integral;
+//				log_msg.body.log_FLOW.pixel_flow_y_integral = buf.flow.pixel_flow_y_integral;
+//				log_msg.body.log_FLOW.quality = buf.flow.quality;
+//				log_msg.body.log_FLOW.sensor_id = buf.flow.sensor_id;
+//				LOGBUFFER_WRITE_AND_COUNT(FLOW);
+//			}
 
 			/* --- RC CHANNELS --- */
 			if (copy_if_updated(ORB_ID(rc_channels), &subs.rc_sub, &buf.rc)) {
@@ -2103,31 +2115,31 @@ int sdlog2_thread_main(int argc, char *argv[])
 			}
 
 			/* --- TELEMETRY --- */
-			for (unsigned i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
-				if (copy_if_updated_multi(ORB_ID(telemetry_status), i, &subs.telemetry_subs[i], &buf.telemetry)) {
-					log_msg.msg_type = LOG_TEL0_MSG + i;
-					log_msg.body.log_TEL.rssi = buf.telemetry.rssi;
-					log_msg.body.log_TEL.remote_rssi = buf.telemetry.remote_rssi;
-					log_msg.body.log_TEL.noise = buf.telemetry.noise;
-					log_msg.body.log_TEL.remote_noise = buf.telemetry.remote_noise;
-					log_msg.body.log_TEL.rxerrors = buf.telemetry.rxerrors;
-					log_msg.body.log_TEL.fixed = buf.telemetry.fixed;
-					log_msg.body.log_TEL.txbuf = buf.telemetry.txbuf;
-					log_msg.body.log_TEL.heartbeat_time = buf.telemetry.heartbeat_time;
-					LOGBUFFER_WRITE_AND_COUNT(TEL);
-				}
-			}
+//			for (unsigned i = 0; i < ORB_MULTI_MAX_INSTANCES; i++) {
+//				if (copy_if_updated_multi(ORB_ID(telemetry_status), i, &subs.telemetry_subs[i], &buf.telemetry)) {
+//					log_msg.msg_type = LOG_TEL0_MSG + i;
+//					log_msg.body.log_TEL.rssi = buf.telemetry.rssi;
+//					log_msg.body.log_TEL.remote_rssi = buf.telemetry.remote_rssi;
+//					log_msg.body.log_TEL.noise = buf.telemetry.noise;
+//					log_msg.body.log_TEL.remote_noise = buf.telemetry.remote_noise;
+//					log_msg.body.log_TEL.rxerrors = buf.telemetry.rxerrors;
+//					log_msg.body.log_TEL.fixed = buf.telemetry.fixed;
+//					log_msg.body.log_TEL.txbuf = buf.telemetry.txbuf;
+//					log_msg.body.log_TEL.heartbeat_time = buf.telemetry.heartbeat_time;
+//					LOGBUFFER_WRITE_AND_COUNT(TEL);
+//				}
+//			}
 
 			/* --- DISTANCE SENSOR --- */
-			if (copy_if_updated(ORB_ID(distance_sensor), &subs.distance_sensor_sub, &buf.distance_sensor)) {
-				log_msg.msg_type = LOG_DIST_MSG;
-				log_msg.body.log_DIST.id = buf.distance_sensor.id;
-				log_msg.body.log_DIST.type = buf.distance_sensor.type;
-				log_msg.body.log_DIST.orientation = buf.distance_sensor.orientation;
-				log_msg.body.log_DIST.current_distance = buf.distance_sensor.current_distance;
-				log_msg.body.log_DIST.covariance = buf.distance_sensor.covariance;
-				LOGBUFFER_WRITE_AND_COUNT(DIST);
-			}
+//			if (copy_if_updated(ORB_ID(distance_sensor), &subs.distance_sensor_sub, &buf.distance_sensor)) {
+//				log_msg.msg_type = LOG_DIST_MSG;
+//				log_msg.body.log_DIST.id = buf.distance_sensor.id;
+//				log_msg.body.log_DIST.type = buf.distance_sensor.type;
+//				log_msg.body.log_DIST.orientation = buf.distance_sensor.orientation;
+//				log_msg.body.log_DIST.current_distance = buf.distance_sensor.current_distance;
+//				log_msg.body.log_DIST.covariance = buf.distance_sensor.covariance;
+//				LOGBUFFER_WRITE_AND_COUNT(DIST);
+//			}
 
 			/* --- ESTIMATOR STATUS --- */
 			if (copy_if_updated(ORB_ID(estimator_status), &subs.estimator_status_sub, &buf.estimator_status)) {
@@ -2223,14 +2235,14 @@ int sdlog2_thread_main(int argc, char *argv[])
 			}
 
 			/* --- WIND ESTIMATE --- */
-			if (copy_if_updated(ORB_ID(wind_estimate), &subs.wind_sub, &buf.wind_estimate)) {
-				log_msg.msg_type = LOG_WIND_MSG;
-				log_msg.body.log_WIND.x = buf.wind_estimate.windspeed_north;
-				log_msg.body.log_WIND.y = buf.wind_estimate.windspeed_east;
-				log_msg.body.log_WIND.cov_x = buf.wind_estimate.covariance_north;
-				log_msg.body.log_WIND.cov_y = buf.wind_estimate.covariance_east;
-				LOGBUFFER_WRITE_AND_COUNT(WIND);
-			}
+//			if (copy_if_updated(ORB_ID(wind_estimate), &subs.wind_sub, &buf.wind_estimate)) {
+//				log_msg.msg_type = LOG_WIND_MSG;
+//				log_msg.body.log_WIND.x = buf.wind_estimate.windspeed_north;
+//				log_msg.body.log_WIND.y = buf.wind_estimate.windspeed_east;
+//				log_msg.body.log_WIND.cov_x = buf.wind_estimate.covariance_north;
+//				log_msg.body.log_WIND.cov_y = buf.wind_estimate.covariance_east;
+//				LOGBUFFER_WRITE_AND_COUNT(WIND);
+//			}
 
 			/* --- TIMESYNC OFFSET --- */
 			if (copy_if_updated(ORB_ID(time_offset), &subs.tsync_sub, &buf.time_offset)) {
@@ -2282,13 +2294,31 @@ int sdlog2_thread_main(int argc, char *argv[])
 			LOGBUFFER_WRITE_AND_COUNT(ATT);
 		}
 
+		/*sonar distance*/
+		if(copy_if_updated(ORB_ID(sonar_distance), &subs.sonar_sub, &buf.sonar))
+		{
+			log_msg.msg_type = LOG_ALT_MSG;
+			//log_msg.body.log_ALT.alt_sp = buf.alt_control.alt_sp;
+			//log_msg.body.log_ALT.alt_measure = buf.alt_control.alt_measure;
+			//log_msg.body.log_ALT.thrust = buf.alt_control.thrust;
+
+			log_msg.body.log_ALT.distance = buf.sonar.distance[0]/100.0f;
+			log_msg.body.log_ALT.status = buf.sonar.status;
+			LOGBUFFER_WRITE_AND_COUNT(ALT);
+
+	/*		thrust = buf.alt_control.thrust;
+			alt_sp = buf.alt_control.alt_sp;
+			alt_now = buf.alt_control.alt_measure;
+			count++;	*/
+		}
+
 		/* --- CAMERA TRIGGER --- */
-		if (copy_if_updated(ORB_ID(camera_trigger), &subs.cam_trig_sub, &buf.camera_trigger)) {
+		/*if (copy_if_updated(ORB_ID(camera_trigger), &subs.cam_trig_sub, &buf.camera_trigger)) {
 			log_msg.msg_type = LOG_CAMT_MSG;
 			log_msg.body.log_CAMT.timestamp = buf.camera_trigger.timestamp;
 			log_msg.body.log_CAMT.seq = buf.camera_trigger.seq;
 			LOGBUFFER_WRITE_AND_COUNT(CAMT);
-		}
+		}	*/
 
 		/* --- LAND DETECTED --- */
 		if (copy_if_updated(ORB_ID(vehicle_land_detected), &subs.land_detected_sub, &buf.land_detected)) {
@@ -2346,6 +2376,28 @@ void sdlog2_status()
 
 		PX4_WARN("wrote %lu msgs, %4.2f MiB (average %5.3f KiB/s), skipped %lu msgs", log_msgs_written, (double)mebibytes, (double)(kibibytes / seconds), log_msgs_skipped);
 		mavlink_log_info(&mavlink_log_pub, "[blackbox] wrote %lu msgs, skipped %lu msgs", log_msgs_written, log_msgs_skipped);
+		while(1)
+		{
+			//warnx("[SD] thrust=%.2f alt_sp=%.2f alt_now=%.2f count=%d",(double)thrust,(double)alt_sp,(double)alt_now,count);
+
+			warnx("============press CTRL+C to abort============");
+			char c;
+			struct pollfd fds;
+			int ret;
+			fds.fd=0;
+			fds.events=POLLIN;
+			ret=poll(&fds,1,0);
+			if(ret>0)
+			{
+				read(0,&c,1);
+				if(c==0x03||c==0x63||c=='q')
+				{
+					warnx("User abort\n");
+					break;
+				}
+			}
+			usleep(600000);
+		}
 	}
 }
 

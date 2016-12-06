@@ -108,7 +108,7 @@ set(config_module_list
 	modules/fw_att_control
 	modules/mc_att_control
 	modules/mc_pos_control
-	modules/vtol_att_control
+	#modules/vtol_att_control
 
 	#
 	# Logging
@@ -157,13 +157,17 @@ set(config_module_list
 	#
 	#examples/rover_steering_control
 
+	#pixeyas-specific modules
+	#sonar group
+	drivers/sonar_group_service
+	
 	#
 	# Demo apps
 	#
 	#examples/math_demo
 	# Tutorial code from
 	# https://px4.io/dev/px4_simple_app
-	#examples/px4_simple_app
+	examples/px4_simple_app
 
 	# Tutorial code from
 	# https://px4.io/dev/daemon

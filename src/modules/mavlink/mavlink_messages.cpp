@@ -90,6 +90,8 @@
 #include <uORB/topics/vtol_vehicle_status.h>
 #include <uORB/topics/wind_estimate.h>
 #include <uORB/uORB.h>
+#include <v1.0/custom_messages/mavlink_msg_sonargroup.h>
+#include <uORB/topics/sonar_distance.h>
 
 
 static uint16_t cm_uint16_from_m_float(float m);
@@ -3457,6 +3459,68 @@ protected:
 	}
 };
 
+class MavlinkStreamSonarGroup : public MavlinkStream
+{
+public:
+    const char *get_name() const
+    {
+        return MavlinkStreamSonarGroup::get_name_static();
+    }
+    static const char *get_name_static()
+    {
+        return "SONARGROUP";
+    }
+    static uint8_t get_id_static()
+	{
+		return MAVLINK_MSG_ID_SONARGROUP;
+	}
+    uint8_t get_id()
+    {
+        return get_id_static();
+    }
+    static MavlinkStream *new_instance(Mavlink *mavlink)
+    {
+        return new MavlinkStreamSonarGroup(mavlink);
+    }
+    unsigned get_size()
+    {
+        return MAVLINK_MSG_ID_SONARGROUP_LEN + MAVLINK_NUM_NON_PAYLOAD_BYTES;
+    }
+
+private:
+    MavlinkOrbSubscription *_sub;
+    uint64_t _ca_traj_time;
+
+    /* do not allow top copying this class */
+    MavlinkStreamSonarGroup(MavlinkStreamSonarGroup &);
+    MavlinkStreamSonarGroup &operator = (const MavlinkStreamSonarGroup &);
+
+protected:
+    explicit MavlinkStreamSonarGroup(Mavlink *mavlink) : MavlinkStream(mavlink),
+        _sub(_mavlink->add_orb_subscription(ORB_ID(sonar_distance))),  // make sure you enter the name of your uorb topic here
+        _ca_traj_time(0)
+    {}
+
+    void send(const hrt_abstime t)
+    {
+        struct sonar_distance_s sonar;    //make sure ca_traj_struct_s is the definition of your uorb topic
+
+        if (_sub->update(&_ca_traj_time, &sonar)) {
+            mavlink_sonargroup_t _msg_sonargroup;  //make sure mavlink_ca_trajectory_t is the definition of your custom mavlink message
+
+            _msg_sonargroup.time_usec = sonar.timestamp;
+            _msg_sonargroup.front = 1;
+            _msg_sonargroup.rear  = 2;
+            _msg_sonargroup.left = 3;
+            _msg_sonargroup.right = 4;
+            _msg_sonargroup.down = sonar.distance[0];
+            //_msg_sonargroup.down = sonar.distance[0];
+
+            mavlink_msg_sonargroup_send_struct(_mavlink->get_channel(), &_msg_sonargroup);
+        }
+    }
+};
+
 const StreamListItem *streams_list[] = {
 	new StreamListItem(&MavlinkStreamHeartbeat::new_instance, &MavlinkStreamHeartbeat::get_name_static, &MavlinkStreamHeartbeat::get_id_static),
 	new StreamListItem(&MavlinkStreamStatustext::new_instance, &MavlinkStreamStatustext::get_name_static, &MavlinkStreamStatustext::get_id_static),
@@ -3501,5 +3565,6 @@ const StreamListItem *streams_list[] = {
 	new StreamListItem(&MavlinkStreamAltitude::new_instance, &MavlinkStreamAltitude::get_name_static, &MavlinkStreamAltitude::get_id_static),
 	new StreamListItem(&MavlinkStreamADSBVehicle::new_instance, &MavlinkStreamADSBVehicle::get_name_static, &MavlinkStreamADSBVehicle::get_id_static),
 	new StreamListItem(&MavlinkStreamWind::new_instance, &MavlinkStreamWind::get_name_static, &MavlinkStreamWind::get_id_static),
+	new StreamListItem(&MavlinkStreamSonarGroup::new_instance, &MavlinkStreamSonarGroup::get_name_static, &MavlinkStreamSonarGroup::get_id_static),
 	nullptr
 };

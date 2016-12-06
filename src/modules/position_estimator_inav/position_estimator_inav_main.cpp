@@ -1341,7 +1341,9 @@ int position_estimator_inav_thread_main(int argc, char *argv[])
 				local_pos.dist_bottom_rate = - z_est[1];
 			}
 
+			//local_pos.dist_bottom = 10;
 			local_pos.timestamp = t;
+			//local_pos.ref_alt=10;
 
 			orb_publish(ORB_ID(vehicle_local_position), vehicle_local_position_pub, &local_pos);
 
